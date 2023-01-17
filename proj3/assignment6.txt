@@ -1,0 +1,74 @@
+1. 
+	[1] O(n)    mStack.clear();
+
+	
+The member function clear() has a worst case time complexity of O(n). Given that I used a vector as a means of storing data in my stack, I used the clear() method to rid my stack of all data. The built in clear method that comes with the vector deletes elements from a vector one-by-one. Given this, the member function clear() has a worst case time complexity of O(n), where n is equal to the number of elements within a stack.
+
+
+2.
+            Stack<T> operands;
+            int i;
+
+            T temp1 = 0, temp2 = 0;
+            T tempNumber = 0, tempDecimal = 0;
+            T power = -1;
+
+    [1] O(n) for (i = 0; i < postfix.length(); i++) { 
+                auto c = postfix[i];
+
+                if (isdigit(c)) {
+    [2] O(log n)        while (i < postfix.length() && (isdigit(postfix[i]) || postfix[i] == '.')) {  // Find digits
+                        if (postfix[i] == DECIMAL_POINT) { // Check for decimal numbers
+                            i++;
+
+    [3] O(log n)                while (i < postfix.length() && (isdigit(postfix[i]))) { // Loop to get value of decimal numbers
+                                tempDecimal = tempDecimal + ((postfix[i] - '0') * pow(10, power));
+                                i++;
+                                power--;
+                            }
+
+                            tempNumber += tempDecimal; // Add decimal numbers to digit
+                            
+                        } else {
+                            tempNumber = (tempNumber * 10) + (postfix[i] - '0'); // Add digits
+                            i++;
+                        }
+                    }
+
+    [4] O(1)        operands.push(tempNumber);  // Add digit to stack
+
+                    tempNumber = 0; // Reset variables
+                    tempDecimal = 0;
+                    power = -1;
+
+                } else if (isOperator(c)) { 
+    [5] O(1)         temp1 = operands.top(); // Top previous two values
+    [6] O(1)         operands.pop();
+
+    [7] O(1)        temp2 = operands.top();
+    [8] O(1)        operands.pop();
+
+    [9] O(1)        switch (c) { // Evaluate
+                        case ADDITION_OPERATOR: 
+                            operands.push(temp2 + temp1); 
+                            break;
+
+                        case SUBTRACTION_OPERATOR: 
+                            operands.push(temp2 - temp1); 
+                            break;
+                        case MULTIPLICATION_OPERATOR: 
+                            operands.push(temp2 * temp1); 
+                            break;
+                        case DIVISION_OPERATOR: 
+                            operands.push(temp2 / temp1); 
+                            break;
+                        case EXPONENTIAL_OPERATOR: 
+                            operands.push(pow(temp2, temp1)); 
+                            break;
+                    }
+                }
+            }
+
+            return operands.top(); // Return result
+
+The function developed to evaluate postfix expressions has a worst-case time complexity of O(n log^2(n)). The function above contains 2 nested loops. One loop traverses the postfix expression, the next traverse the numbers within a postfix expression, and the last remaining loop traverse the number after a decimal point. Given that all of these by run in O(n) or O(log n), respectively, our worse case scenario is O(n * log(n) * log(n) + 6) (popping, pushing, and accessing the top element of a stack, however, all take O(1) time complexity), or O(n log^2(n).
